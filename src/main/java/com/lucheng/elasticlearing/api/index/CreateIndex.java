@@ -1,6 +1,6 @@
 package com.lucheng.elasticlearing.api.index;
 
-import org.elasticsearch.client.Client;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexRequest;
@@ -24,7 +24,7 @@ public class CreateIndex {
     @Autowired
     private RestHighLevelClient client;
     /**
-     * 创建es索引
+     * 创建 es index
      * 类似于mysql的表
      */
     public void createIndex() throws IOException {
@@ -57,5 +57,21 @@ public class CreateIndex {
         indexRequest.setMasterTimeout(TimeValue.timeValueMinutes(2));
         //获取响应对象,同步获取
         CreateIndexResponse response = client.indices().create(indexRequest, RequestOptions.DEFAULT);
+    }
+
+    /**
+     * 删除 es index
+     * @throws IOException
+     */
+    public void deleteIndex() throws IOException{
+        // 删除索引请求
+        DeleteIndexRequest request = new DeleteIndexRequest("twitter");
+        // 可选参数配置,等待所有es节点的响应
+        request.timeout(TimeValue.timeValueMinutes(2));
+        // 设置 连接master节点超时时间
+        request.masterNodeTimeout(TimeValue.timeValueMinutes(2));
+        // 执行 删除请求
+        client.indices().delete(request,RequestOptions.DEFAULT);
+
     }
 }
